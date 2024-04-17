@@ -215,6 +215,11 @@ backups:
     path: "/"
     accessKey: ""
     secretKey: ""
+    existingSecret:
+      enabled: false
+      name: ""
+      accessKey: "ACCESS_KEY_ID"
+      secretKey: "ACCESS_SECRET_KEY"
   azure:
     path: "/"
     connectionString: ""

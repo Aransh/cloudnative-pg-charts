@@ -22,12 +22,21 @@
   destinationPath: "s3://{{ required "You need to specify S3 bucket if destinationPath is not specified." .scope.s3.bucket }}{{ .scope.s3.path }}"
   {{- end }}
   s3Credentials:
+  {{- if .scope.s3.existingSecret.enabled }}
+    accessKeyId:
+      name: {{ required ".Values.backups.s3.existingSecret.name is required, but not specified." .scope.s3.existingSecret.name }}
+      key: {{ .scope.s3.existingSecret.accessKey }}
+    secretAccessKey:
+      name: {{ required ".Values.backups.s3.existingSecret.name is required, but not specified." .scope.s3.existingSecret.name }}
+      key: {{ .scope.s3.existingSecret.secretKey }}
+  {{- else }}
     accessKeyId:
       name: {{ .chartFullname }}-backup-s3{{ .secretSuffix }}-creds
       key: ACCESS_KEY_ID
     secretAccessKey:
       name: {{ .chartFullname }}-backup-s3{{ .secretSuffix }}-creds
       key: ACCESS_SECRET_KEY
+  {{- end }}
 {{- else if eq .scope.provider "azure" }}
   {{- if empty .scope.destinationPath }}
   destinationPath: "https://{{ required "You need to specify Azure storageAccount if destinationPath is not specified." .scope.azure.storageAccount }}.{{ .scope.azure.serviceName }}.core.windows.net/{{ .scope.azure.containerName }}{{ .scope.azure.path }}"
